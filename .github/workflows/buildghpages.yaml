@@ -1,0 +1,23 @@
+name: build_ghpages
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+            fetch-depth: 0
+      - shell: bash
+        run: |
+          mkdir -pf build
+          cp thesis.pdf build/thesis.pdf
+          
+      - uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build # The folder the action should deploy.
+          
