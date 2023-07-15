@@ -15,4 +15,4 @@ jobs:
           context: .
           file: ./src/Dockerfile
           push: true
-          tags: RBEGamer/MarkdownThesisTemplate:latest
+          tags: ghcr.io/rbegamer/markdownthesistemplate:latest
