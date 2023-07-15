@@ -14,8 +14,10 @@ jobs:
             fetch-depth: 0
       - shell: bash
         run: |
-          mkdir -p build
+          rm -Rf build || true
+          cp -Rf pages_static/ build/
           cp thesis.pdf build/thesis.pdf
+          
           
       - uses: JamesIves/github-pages-deploy-action@v4
         with:
