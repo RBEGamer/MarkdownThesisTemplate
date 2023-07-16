@@ -1,7 +1,7 @@
 # Motivation
 
 
-# Einleitung
+# Tables
 
 : Das ist eine tolle Tabelle \label{Das_ist_eine_tolle_Tabelle.csv}
 
@@ -15,4 +15,11 @@
 
 Tabelle ist toll: \ref{Das_ist_eine_tolle_Tabelle.csv}
 
-## sub
+
+## Images
+
+
+![Dies ist ein Testbild \label{Dies_ist_ein_Testbild.png}](./generated_images/border_Dies_ist_ein_Testbild.png)
+
+
+Das Bild ist toll: \ref{Dies_ist_ein_Testbild.png}

@@ -22,7 +22,8 @@ rm -f *.fls
 rm -f *.fdb_latexmk
 rm -f *.run.xml
 rm -Rf tmp
-
+rm -Rf generated_images
+mkdir -p generated_images
 
 rm -f ./thesis_document_tmp.md
 # REMOVE GENERATED TEX
@@ -72,22 +73,46 @@ done
 # ADD IMAGE BORDERS
 
 
-# FOR EACH IMAGE
-#FILES="./images/*.png"
-#for f in $FILES
-#do#
 
-#    FN="${f##*/}"
-#    echo "Processing image FN :$f file..."
-#    #cp "$f" "border_$f"
-#    convert -bordercolor white -border 50 "$f" "border_$f"
-#    # REPLACE CONTENT WITH SED
-#    sed -i 's/'"$f"'/'border_"$f"'/g' ./thesis_document_tmp.tex
-#done
-# convert input.jpg -bordercolor white -border <n> output.jpg
-# replace filepaths in markdown tmp
 
-#exit 0
+# ADD IMAGES
+imagefiles="./images/*.png"
+for f in $imagefiles
+do  
+    FN="${f##*/}"
+    FNWOE="${FN%%.*}"
+    echo "Processing image $FN file..."
+
+    # ADD A SMALL BORDER AROUNF THE IMAGE
+    DIR="$(dirname "${f}")" 
+    filenameimageboarder="./generated_images/border_$FN"
+    cp "$f" "$filenameimageboarder"
+    convert -bordercolor transparent -border 10 "$f" "$filenameimageboarder"
+
+
+    
+    # CREATE TABLE MARKDOWN FILE
+    rm -f "$f.md"
+    touch "$f.md"
+    replace="_"
+    replacewith=" "
+    IMAGENAME="${FNWOE//${replace}/${replacewith}}"
+    echo "image: $IMAGENAME"
+    ## INSERT TABLE HEADER AND REF
+    echo "![$IMAGENAME \label{$FN}]($filenameimageboarder)" >> "$f.md"
+    #echo ": $IMAGENAME \label{$FN}" >> "$f.md"
+    echo "" >> "$f.md"
+    ## INSERT TABLE
+    cat "$f.md"
+
+
+    # REPLACE CONTENT WITH SED
+    #cat "$f.md" | sed -e 's/[@table:'$FN']/g/' ./thesis_document_tmp.md 
+    str="%%$FN%%"
+    echo "$str"
+    sed -e "/$str/ {" -e "r $f.md" -e 'd' -e '}' -i ./thesis_document_tmp.md 
+done
+
 
 
 
