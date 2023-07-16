@@ -3,5 +3,6 @@
 
 # Einleitung
 
+[@table:example.csv]
 
 ## sub

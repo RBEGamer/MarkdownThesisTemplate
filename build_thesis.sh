@@ -21,7 +21,10 @@ rm -f *.blg
 rm -f *.fls
 rm -f *.fdb_latexmk
 rm -f *.run.xml
+rm -Rf tmp
 
+
+rm -f ./thesis_document_tmp.md
 # REMOVE GENERATED TEX
 rm -f ./thesis_declaration.tex
 rm -f ./thesis_document.tex
@@ -35,21 +38,34 @@ rm -f ./thesis.pdf
 echo "-- STARTING BUILDING THESIS DOCUMENT --"
 pandoc --version
 
-# CONVERT TABLES
-rm -f ./thesis_document_tmp.md  || true
-cp ./thesis_document.md  ./thesis_document_tmp.md 
+# CONVERT CSV TABLES to MARKDOWN
+cp ./thesis_document.md ./thesis_document_tmp.md 
 FILES="./tables/*.csv"
 for f in $FILES
 do
   echo "Processing table $f file..."
   cat "$f"
-  python3 csv2md/csv2md "$f" > "$f.md"
-
+  csv2md "$f" > "$f.md"
+  cat "$f.md"
   # REPLACE CONTENT WITH SED
   cat "$f.md" | sed -e 's/[@table:'"$f"']/g' ./thesis_document_tmp.md 
 done
 
+# ADD IMAGE BORDERS
 
+
+# FOR EACH IMAGE
+FILES="./images/*.png"
+for f in $FILES
+do
+    echo "Processing image $f file..."
+    #cp "$f" "border_$f"
+    convert -bordercolor white -border 50 "$f" "border_$f"
+    # REPLACE CONTENT WITH SED
+    sed -i 's/'"$f"'/'border_"$f"'/g' ./thesis_document_tmp.tex
+done
+# convert input.jpg -bordercolor white -border <n> output.jpg
+# replace filepaths in markdown tmp
 
 
 pandoc ./thesis_document_tmp.md -o ./thesis_document.tex --from markdown --biblatex --template ./pandoc_template.tex --listings --top-level-division=chapter --lua-filter ./pandoc_filters/pandoc-gls.lua
@@ -102,6 +118,6 @@ rm -f *.blg
 rm -f *.fls
 rm -f *.fdb_latexmk
 rm -f *.run.xml
-
+rm -Rf tmp
 
 exit 0

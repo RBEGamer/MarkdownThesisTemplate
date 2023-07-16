@@ -5,6 +5,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update
 RUN apt install -y texlive-full texmaker pandoc sed nano
 
+RUN apt install -yimagemagick
+
 RUN apt install -y build-essential
 RUN apt install -y haskell-platform
 #RUN apt install -y cabal-install
@@ -22,4 +24,5 @@ RUN export PATH="$HOME/.cabal/bin:$PATH"
 #RUN cabal install --ghc-options="+RTS -M7G" -j1 --force-reinstalls pandoc
 #RUN cabal install --ghc-options="+RTS -M7G" -j1 --force-reinstalls --dependencies-only pandoc-csv2table
 
+RUN cd csv2md && python3 ./setup.py install && cd ..
 CMD ["/var/thesis/build_thesis.sh"]
