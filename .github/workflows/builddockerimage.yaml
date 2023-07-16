@@ -18,4 +18,4 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ghcr.io/RBEGamer/markdownthesistemplate:latest
+          tags: ghcr.io/rbegamer/markdownthesistemplate:latest
