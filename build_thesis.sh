@@ -25,6 +25,7 @@ rm -f *.run.xml
 # REMOVE GENERATED TEX
 rm -f ./thesis_declaration.tex
 rm -f ./thesis_document.tex
+rm -f ./thesis_document_tmp.tex
 rm -f ./thesis_abstract.tex
 rm -f ./thesis_attachments.tex
 # REMOVE GENERATED PDF
@@ -34,10 +35,24 @@ rm -f ./thesis.pdf
 echo "-- STARTING BUILDING THESIS DOCUMENT --"
 pandoc --version
 
+# CONVERT TABLES
+rm -f ./thesis_document_tmp.md  || true
+cp ./thesis_document.md  ./thesis_document_tmp.md 
+FILES="./tables/*.csv"
+for f in $FILES
+do
+  echo "Processing table $f file..."
+  cat "$f"
+  python3 csv2md/csv2md "$f" > "$f.md"
+
+  # REPLACE CONTENT WITH SED
+  cat "$f.md" | sed -e 's/[@table:'"$f"']/g' ./thesis_document_tmp.md 
+done
 
 
 
-pandoc ./thesis_document.md -o ./thesis_document.tex --from markdown --biblatex --template ./pandoc_template.tex --listings --top-level-division=chapter --lua-filter ./pandoc_filters/pandoc-gls.lua
+
+pandoc ./thesis_document_tmp.md -o ./thesis_document.tex --from markdown --biblatex --template ./pandoc_template.tex --listings --top-level-division=chapter --lua-filter ./pandoc_filters/pandoc-gls.lua
 # NOW THE HACKY PART WE WANT TO USE THE STANDART cite command instead the from pandoc used cite to we use sed to hard replace the stuff
 sed -i 's/\\autocite{/\\cite{/g' ./thesis_document.tex
 # python3 ./fix-table-color-bleed.py ./thesis_document.tex > ./thesis_document.tex
