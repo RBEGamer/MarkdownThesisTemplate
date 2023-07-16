@@ -2,6 +2,9 @@ FROM ubuntu:22.04
 
 LABEL org.opencontainers.image.source=https://github.com/RBEGamer/MarkdownThesisTemplate
 
+
+
+
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt update
@@ -32,4 +35,5 @@ RUN python3 ./setup.py install
 RUN csv2md -h
 
 WORKDIR /var/thesis
+COPY . .
 CMD ["/var/thesis/build_thesis.sh"]

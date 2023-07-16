@@ -9,3 +9,7 @@ fi
 
 
 docker run -i --rm -v "$(pwd)":/var/thesis markdownthesisbuilder
+
+
+
+#docker tag markdownthesisbuilder ghcr.io/rbegamer/markdownthesistemplate:latest
