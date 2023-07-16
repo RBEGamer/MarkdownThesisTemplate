@@ -18,12 +18,12 @@ acronym (+uscf)
 
 
 
-tabelle:
+tabellen:
 
-: Auflistung von Open-Source Schachtisch Projekten \label{oschesstables}
-
-| Automated Chess Board (Michael Guerero) | Automated Chess Board (Akash Ravichandran) | DIY Super Smart Chessboard |
-
+* place a csv file with Caption_Table_Name.csv in folder tables
+* please use _ instead of spaces " ", the name of file is the caption of the table
+* to insert it into the document use: %%Caption_Table_Name.csv%%
+* to ref it in text use: \ref{Caption_Table_Name.csv}
 
 
 #

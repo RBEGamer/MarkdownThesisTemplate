@@ -43,29 +43,55 @@ cp ./thesis_document.md ./thesis_document_tmp.md
 FILES="./tables/*.csv"
 for f in $FILES
 do
-  echo "Processing table $f file..."
-  cat "$f"
-  csv2md "$f" > "$f.md"
-  cat "$f.md"
-  # REPLACE CONTENT WITH SED
-  cat "$f.md" | sed -e 's/[@table:'"$f"']/g' ./thesis_document_tmp.md 
+    FN="${f##*/}"
+    FNWOE="${FN%%.*}"
+    echo "Processing table $FN file..."
+    cat "$f"
+    # CREATE TABLE MARKDOWN FILE
+    rm -f "$f.md"
+    touch "$f.md"
+    replace="_"
+    replacewith=" "
+    TABLENAME="${FNWOE//${replace}/${replacewith}}"
+    echo "tablename: $TABLENAME"
+    ## INSERT TABLE HEADER AND REF
+    echo ": $TABLENAME \label{$FN}" >> "$f.md"
+    echo "" >> "$f.md"
+    ## INSERT TABLE
+    csv2md "$f" >> "$f.md"
+    cat "$f.md"
+
+
+    # REPLACE CONTENT WITH SED
+    #cat "$f.md" | sed -e 's/[@table:'$FN']/g/' ./thesis_document_tmp.md 
+    str="%%$FN%%"
+    echo "$str"
+    sed -e "/$str/ {" -e "r $f.md" -e 'd' -e '}' -i ./thesis_document_tmp.md 
 done
 
 # ADD IMAGE BORDERS
 
 
 # FOR EACH IMAGE
-FILES="./images/*.png"
-for f in $FILES
-do
-    echo "Processing image $f file..."
-    #cp "$f" "border_$f"
-    convert -bordercolor white -border 50 "$f" "border_$f"
-    # REPLACE CONTENT WITH SED
-    sed -i 's/'"$f"'/'border_"$f"'/g' ./thesis_document_tmp.tex
-done
+#FILES="./images/*.png"
+#for f in $FILES
+#do#
+
+#    FN="${f##*/}"
+#    echo "Processing image FN :$f file..."
+#    #cp "$f" "border_$f"
+#    convert -bordercolor white -border 50 "$f" "border_$f"
+#    # REPLACE CONTENT WITH SED
+#    sed -i 's/'"$f"'/'border_"$f"'/g' ./thesis_document_tmp.tex
+#done
 # convert input.jpg -bordercolor white -border <n> output.jpg
 # replace filepaths in markdown tmp
+
+#exit 0
+
+
+
+
 
 
 pandoc ./thesis_document_tmp.md -o ./thesis_document.tex --from markdown --biblatex --template ./pandoc_template.tex --listings --top-level-division=chapter --lua-filter ./pandoc_filters/pandoc-gls.lua
